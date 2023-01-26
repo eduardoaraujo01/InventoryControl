@@ -72,11 +72,11 @@ main {
 }
 
 section.graph {
- 
+
     width: 33%;
     height: 100%;
     padding: 20px 20px 0 20px;
-    
+
 }
 .graph_header{
     display: flex;
@@ -92,7 +92,7 @@ h2 {
     flex: 1;
     width: 100px;
     background-color: rgba(0, 0, 0, .2);
-    height: 2px;    
+    height: 2px;
 }
 
 .graph_header-date{
@@ -154,7 +154,7 @@ h2 {
     align-items: center;
     justify-content: space-between;
     padding: 30px 15px;
-    margin-bottom: 10px;    
+    margin-bottom: 10px;
     border-bottom: 1px solid var(--background-light);
     transition: all .3s ease-in-out;
 }
@@ -170,7 +170,7 @@ h2 {
     display: flex;
     align-items: center;
     flex: 1;
-    
+
 }
 
 .priority, .actions {
@@ -207,29 +207,30 @@ h2 {
     font-weight: bold;
 }
 
-#create_task_section {
+#task_section {
     margin: auto;
     padding-top: 20px;
 }
-#create_task_section>h1{
+#task_section>h1{
     text-align: center;
     margin-bottom: 20px;
 }
 .inputArea {
     display: block;
-    margin: 10px;
-    
+    margin: 10px 0 20px 0;
+
 }
 .inputArea>label{
     display: block;
-    
     margin-bottom: 5px;
+    margin-left: 5px;
 }
 .inputArea>input, .inputArea>select {
     height: 40px;
-    width: 400px;   
-    border-radius: 10px;
-    border: 1px solid #333;
+    width: 400px;
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid #ccc;
     padding: 5px 10px;
 }
 
@@ -237,6 +238,8 @@ h2 {
     height: 120px;
     width: 400px;
     border-radius: 10px;
-    border: 1px solid #333;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid #ccc;
     padding: 5px 10px;
+
 }

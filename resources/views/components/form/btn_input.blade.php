@@ -1,5 +1,2 @@
-<div class="inputArea">
-    <button type="{{$type}}" 
-    class="{{empty($class) ? 'btn ': 'btn btn-primary'}}"
-    >{{$slot}} </button>
-</div>
+<button type="{{$type}}" class="btn {{$type =='submit' ? 'btn-primary' : ''}}">{{$slot}}</button>
+

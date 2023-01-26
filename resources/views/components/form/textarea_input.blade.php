@@ -2,8 +2,8 @@
     <label for="{{$name}}">
        {{$label ?? ''}}
     </label>
-    <textarea 
-    name="{{$name}}" 
+    <textarea
+    name="{{$name}}"
     placeholder="{{$placeholder ?? ''}}"
-    {{empty($required) ? '': 'required'}}></textarea>
+    {{empty($required) ? '': 'required'}}>{{$value ?? ''}}</textarea>
 </div>

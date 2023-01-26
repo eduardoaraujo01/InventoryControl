@@ -3,36 +3,35 @@
         <a href="{{route('home')}}" class="btn btn-primary">
             Voltar
         </a>
-        
+
     </x-slot:btn>
 
-       <section id="create_task_section">
+       <section id="task_section">
             <h1> Criar Tarefa </h1>
-            <form>
-                
-                <x-form.text_input name="title" label="Titulo da Task" required=required placeholder="Digite o titulo da tarefa" />
+            <form method="POST", action="{{route('task.create_action')}}">
+                @csrf
 
-                <x-form.text_input type=date name="due_date" label="Date de Realização:" required=required  />
+                <x-form.text_input name="title" label="Titulo da Task:" required=required placeholder="Digite o titulo da tarefa" />
+
+                <x-form.text_input type="datetime-local" name="due_date" label="Date de Realização:" required=required  />
 
                 <x-form.select_input
-                name="category"
-                label=Categoria
+                name="category_id"
+                label=Categoria:
                 >
-                    <option>Valor Qualquer</option>
+                    @foreach($categories as $category)
+                    <option value="{{$category->id}}">{{$category->title}}</option>
+                    @endforeach
                 </x-form.select_input>
-                
+
                 <x-form.textarea_input
-                name="description"
-                placeholder="Digite a descrição da tarefa "
+                    label="Descrição da tarefa:"
+                    name="description"
+                    placeholder="Digite a descrição da tarefa "
                 />
-                <x-form.btn_input
-                type="reset"
-                >Reset</x-form.btn_input>
-                <div class="inputArea">
-                    <button type="submit" class="btn btn-primary">Criar tarefa </button>
-                </div>
+               <x-form.form_button resetTxt="Resetar" submitTxt="Criar tarefa"/>
 
             </form>
        </section>
-    
+
 </x-layout>
