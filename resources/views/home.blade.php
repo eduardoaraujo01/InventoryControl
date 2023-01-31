@@ -5,14 +5,18 @@
             Criar Tarefa
         </a>
 
-        
-    </x-slot:btn>   
+        <a href="{{route('logout')}}" class="btn btn-primary">
+            Sair
+        </a>
 
-    
+
+    </x-slot:btn>
+
+
 
     <section class="graph">
         <div class="graph_header">
-            <h2>Progresso do Dia</h2>
+            <h2>Progresso do Dia - </h2>
             <div class="graph_header-line"></div>
             <div class="graph_header-date">
                 <img src="/assets/images/icon-prev.png" />
@@ -27,25 +31,25 @@
         <div class="tasks_left_footer">
             <img src="/assets/images/icon-info.png" /> 3 tarefas para serem realizadas
         </div>
-        
+
 
 
     </section>
-    <section class="list">     
+    <section class="list">
         <div class="list-header">
             <select class="list_header-select">
                 <option value="1">Todas as tarefas</option>
             </select>
-        </div>       
+        </div>
         <div class="task-list">
             @foreach ($tasks as $task )
             <x-task  :data=$task/>
             @endforeach
-            
-            
-            
 
-         
-        </div>        
+
+
+
+
+        </div>
     </section>
 </x-layout>
