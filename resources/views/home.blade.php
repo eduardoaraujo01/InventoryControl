@@ -1,101 +1,60 @@
-<x-layout >
+@extends('layouts.app')
 
-    <x-slot:btn>
-        <a href="{{route('task.create')}}" class="btn btn-primary">
-            Criar Tarefa
-        </a>
-
-        <a href="{{route('logout')}}" class="btn btn-primary">
-            Sair
-        </a>
-
-
-    </x-slot:btn>
-
-
-    <section class="graph">
-        <div class="graph_header">
-            <h2>Progresso do Dia - </h2>
-            <div class="graph_header-line"></div>
-            <div class="graph_header-date">
-               <a href="{{route('home', ['date'=> $date_prev_button])}}" >
-                   <img src="/assets/images/icon-prev.png" />
-               </a>
-                     {{$date_as_string}}
-                <a href="{{route('home', ['date'=> $date_next_button])}}" >
-                   <img src="/assets/images/icon-next.png" alt="">
-                </a>
-
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">{{ __('Produtos') }}</div>
+                    <div class="card-body text-center">
+                        <h1>{{ $products }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-warning text-white">{{ __('Produtos com baixo estoque') }}</div>
+                    <div class="card-body text-center">
+                        <h1>{{ $lowStock->count() }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">{{ __('Produtos em falta') }}</div>
+                    <div class="card-body text-center">
+                        <h1>{{ $outOfStock->count() }}</h1>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="graph_header-subtitle">Tarefas: <b>{{$tasks_count-$undone_tasks_count}} / {{$tasks_count}} </b></div>
+    </div>
 
-        <div class="graph-placeholder"></div>
-        <div class="tasks_left_footer">
-            <img src="/assets/images/icon-info.png" /> {{$undone_tasks_count}} tarefas para serem realizadas
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">{{ __('Produtos com baixo estoque') }}</div>
+
+                    <div class="card-body">
+                        @include('products._table', ['products' => $lowStock])
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-    </section>
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">{{ __('Produtos em falta') }}</div>
 
-    <section class="list">
-        <div class="list-header">
-            <select class="list_header-select" onchange="changeTaskStatusFilter(this)">
-                <option value="all_task">Todas as tarefas</option>
-                <option value="task_pending">Tarefas Pendentes</option>
-                <option value="task_done">Tarefas Realizadas</option>
-            </select>
+                    <div class="card-body">
+                        @include('products._table', ['products' => $outOfStock])
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="task-list">
-            @foreach ($tasks as $task )
-            <x-task  :data=$task/>
-            @endforeach
-
-        </div>
-    </section>
-    <script>
-        function changeTaskStatusFilter(e) {
-
-            if(e.value == 'task_pending') {
-                showAllTasks();
-                document.querySelectorAll('.task_done').forEach(function(element) {
-                    element.style.display = 'none';
-                })
-            } else if(e.value == 'task_done') {
-                showAllTasks();
-                document.querySelectorAll('.task_pending').forEach(function(element) {
-                    element.style.display = 'none';
-                })
-            } else {
-                showAllTasks();
-            }
-        }
-
-        function showAllTasks() {
-            document.querySelectorAll('.task').forEach(function(element) {
-                element.style.display = 'block';
-            })
-        }
-    </script>
-
-    <script>
-        async function taskUpdate(element) {
-            let status = element.checked;
-            let taskId = element.dataset.id;
-            let url = '{{route('task.update')}}';
-            let rawResult = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                    'accept': 'application/json'
-                },
-                body: JSON.stringify({status, taskId, _token: '{{csrf_token()}}'})
-            });
-             result =await rawResult.json();
-             if (result.success) {
-                 alert('Task Atualizada com Sucesso!');
-             } else {
-                 element.checked = !status;
-             }
-        }
-    </script>
-</x-layout>
+    </div>
+@endsection

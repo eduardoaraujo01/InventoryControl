@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Task;
+use App\Models\Product;
 use App\Models\Category;
+
+use App\Models\Provider;
+use App\Models\UnitOfMeasurement;
 
 class User extends Authenticatable
 {

@@ -1,8 +1,9 @@
-<div class="inputArea">
-    <label for="{{$name}}">
+<div class="mb-3">
+    <label for="{{$name}}" class="form-label">
        {{$label ?? ''}}
     </label>
-    <select id="{{$name}}" name="{{$name}}" {{empty($required)? '': 'required'}}>
+    <select class="form-select" id="{{$name}}"
+            name="{{$name}}" {{empty($required)? '': 'required'}}>
         <option selected disabled value=""> Selecione uma opção</option>
         {{$slot}}
     </select>

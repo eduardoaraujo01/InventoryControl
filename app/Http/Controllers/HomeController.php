@@ -2,38 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Task;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Product;
+use App\Models\Stock;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index(Request $request) {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-        if ($request->date) {
-            $filteredDate = $request->date;
-        } else {
-            $filteredDate = date('Y-m-d');
-        }
-        $carbonDate = Carbon::createFromDate($filteredDate);
+    /**
+     * Show the application dashboard.
+     *
+     * @return Renderable
+     */
+    public function index()
+    {
+        $lowStock = DB::query()->from(
+            Stock::query()->where('type', '=', 'DEBIT')->select(DB::raw('SUM(amount) as debit, 0 as credit, product_id'))->groupBy('product_id')
+            ->union(
+                Stock::query()->where('type', '=', 'CREDIT')->select(DB::raw('0 as debit, SUM(amount) as credit, product_id'))->groupBy('product_id')
+            )
+        , 'stock')
+            ->join('products', 'products.id', '=', 'stock.product_id')
+            ->select(DB::raw('SUM(credit - debit) as amount'), 'products.id', 'products.min_amount')
+            ->groupBy('products.id', 'products.min_amount')
+            ->havingRaw('products.min_amount >= amount AND amount > 0')
+            ->get()
+            ->map(function ($data) {
+                $product = Product::query()->find($data->id);
+                $product->amount = $data->amount;
+                return $product;
+            });
 
-        $data['date_as_string'] = $carbonDate->translatedFormat('d').' de '.ucfirst($carbonDate->translatedFormat('M'));
-        $data['date_prev_button'] = $carbonDate->addDay(-1)->format('Y-m-d');
-        $data['date_next_button'] = $carbonDate->addDay(2)->format('Y-m-d');
-
-        $data['tasks'] = Task::whereDate('due_date', $filteredDate )->get();
-        $data['AuthUser'] = Auth::user();
-
-        $data['tasks_count'] = $data['tasks']->count();
-        $data['undone_tasks_count'] = $data['tasks']->where('is_done', false)->count();
-
-        return view('home', $data);
-
-        //$tasks = Task::all()->take(4);
-        //$AuthUser = Auth::user();
-        //return view('home', ['tasks' => $tasks, 'AuthUser' => $AuthUser]);
-
+        $outOfStock = DB::query()->from(
+            Stock::query()->where('type', '=', 'DEBIT')->select(DB::raw('SUM(amount) as debit, 0 as credit, product_id'))->groupBy('product_id')
+                ->union(
+                    Stock::query()->where('type', '=', 'CREDIT')->select(DB::raw('0 as debit, SUM(amount) as credit, product_id'))->groupBy('product_id')
+                )
+            , 'stock')
+            ->join('products', 'products.id', '=', 'stock.product_id')
+            ->select(DB::raw('SUM(credit - debit) as amount'), 'products.id', 'products.min_amount')
+            ->groupBy('products.id', 'products.min_amount')
+            ->having('amount', '=', 0)
+            ->get()
+            ->map(function ($data) {
+                $product = Product::query()->find($data->id);
+                $product->amount = $data->amount;
+                return $product;
+            });
+        $products = Product::query()->count();
+        return view('home', compact('lowStock', 'products', 'outOfStock'));
     }
 }
